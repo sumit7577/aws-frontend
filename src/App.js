@@ -40,6 +40,7 @@ import brandDark from "assets/images/logo-ct-dark.png";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
+
   const {
     miniSidenav,
     direction,
@@ -49,6 +50,7 @@ export default function App() {
     transparentSidenav,
     whiteSidenav,
     darkMode,
+    loginData,
   } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
@@ -131,53 +133,81 @@ export default function App() {
     </MDBox>
   );
 
-  return direction === "rtl" ? (
-    <CacheProvider value={rtlCache}>
-      <ThemeProvider theme={darkMode ? themeDarkRTL : themeRTL}>
-        <CssBaseline />
-        {layout === "dashboard" && (
-          <>
-            <Sidenav
-              color={sidenavColor}
-              brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-              brandName="Aws Admin Panel"
-              routes={routes}
-              onMouseEnter={handleOnMouseEnter}
-              onMouseLeave={handleOnMouseLeave}
-            />
-            <Configurator />
-            {configsButton}
-          </>
-        )}
-        {layout === "vr" && <Configurator />}
-        <Routes>
-          {getRoutes(routes)}
-          <Route path="*" element={<Navigate to="/dashboard" />} />
-        </Routes>
-      </ThemeProvider>
-    </CacheProvider>
-  ) : (
+  return loginData.status ? (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
-      {layout === "dashboard" && (
-        <>
-          <Sidenav
-            color={sidenavColor}
-            brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-            brandName="Aws Admin Panel"
-            routes={routes}
-            onMouseEnter={handleOnMouseEnter}
-            onMouseLeave={handleOnMouseLeave}
-          />
-          <Configurator />
-          {configsButton}
-        </>
-      )}
+      <Sidenav
+        color={sidenavColor}
+        brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
+        brandName="Aws Admin Panel"
+        routes={routes}
+        onMouseEnter={handleOnMouseEnter}
+        onMouseLeave={handleOnMouseLeave}
+      />
+      <Configurator />
+      {configsButton}
       {layout === "vr" && <Configurator />}
       <Routes>
         {getRoutes(routes)}
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
     </ThemeProvider>
-  );
+  ) :
+    (
+      <ThemeProvider theme={darkMode ? themeDark : theme}>
+        <CssBaseline />
+        <Routes>
+          {getRoutes(routes)}
+          <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
+        </Routes>
+      </ThemeProvider>
+    )
 }
+  /*  direction === "rtl" ? (
+<CacheProvider value={rtlCache}>
+<ThemeProvider theme={darkMode ? themeDarkRTL : themeRTL}>
+<CssBaseline />
+{layout === "dashboard" && (
+<>
+<Sidenav
+  color={sidenavColor}
+  brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
+  brandName="Aws Admin Panel"
+  routes={routes}
+  onMouseEnter={handleOnMouseEnter}
+  onMouseLeave={handleOnMouseLeave}
+/>
+<Configurator />
+{configsButton}
+</>
+)}
+{layout === "vr" && <Configurator />}
+<Routes>
+{getRoutes(routes)}
+<Route path="*" element={<Navigate to="/dashboard" />} />
+</Routes>
+</ThemeProvider>
+</CacheProvider>
+) : (
+<ThemeProvider theme={darkMode ? themeDark : theme}>
+<CssBaseline />
+{layout === "dashboard" && (
+<>
+<Sidenav
+color={sidenavColor}
+brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
+brandName="Aws Admin Panel"
+routes={routes}
+onMouseEnter={handleOnMouseEnter}
+onMouseLeave={handleOnMouseLeave}
+/>
+<Configurator />
+{configsButton}
+</>
+)}
+{layout === "vr" && <Configurator />}
+<Routes>
+{getRoutes(routes)}
+<Route path="*" element={<Navigate to="/dashboard" />} />
+</Routes>
+</ThemeProvider>  */

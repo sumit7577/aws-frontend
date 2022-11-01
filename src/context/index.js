@@ -1,23 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-/**
-  This file is used for controlling the global states of the components,
-  you can customize the states for the different components here.
-*/
-
 import { createContext, useContext, useReducer, useMemo } from "react";
 
 // prop-types is a library for typechecking of props
@@ -34,6 +14,9 @@ function reducer(state, action) {
   switch (action.type) {
     case "MINI_SIDENAV": {
       return { ...state, miniSidenav: action.value };
+    }
+    case "LOGIN": {
+      return { ...state, loginData: action.value };
     }
     case "TRANSPARENT_SIDENAV": {
       return { ...state, transparentSidenav: action.value };
@@ -81,6 +64,7 @@ function MaterialUIControllerProvider({ children }) {
     direction: "ltr",
     layout: "dashboard",
     darkMode: false,
+    loginData: { status: false, data: null },
   };
 
   const [controller, dispatch] = useReducer(reducer, initialState);
@@ -119,6 +103,7 @@ const setOpenConfigurator = (dispatch, value) => dispatch({ type: "OPEN_CONFIGUR
 const setDirection = (dispatch, value) => dispatch({ type: "DIRECTION", value });
 const setLayout = (dispatch, value) => dispatch({ type: "LAYOUT", value });
 const setDarkMode = (dispatch, value) => dispatch({ type: "DARKMODE", value });
+const setLogin = (dispatch, value) => dispatch({ type: "LOGIN", value });
 
 export {
   MaterialUIControllerProvider,
@@ -133,4 +118,5 @@ export {
   setDirection,
   setLayout,
   setDarkMode,
+  setLogin,
 };
