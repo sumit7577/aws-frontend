@@ -29,7 +29,7 @@ import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 
 // Material Dashboard 2 React routes
-import routes from "routes";
+import { routes, authRoute } from "routes";
 
 // Material Dashboard 2 React contexts
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
@@ -37,6 +37,8 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "co
 // Images
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
+
+
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -96,18 +98,25 @@ export default function App() {
     document.scrollingElement.scrollTop = 0;
   }, [pathname]);
 
-  const getRoutes = (allRoutes) =>
-    allRoutes.map((route) => {
-      if (route.collapse) {
-        return getRoutes(route.collapse);
-      }
+  const getRoutes = (allRoutes) => {
+    if (loginData.status) {
+      return allRoutes.map((route) => (<Route exact path={route.route} element={route.component} key={route.key} />));
+    }
+    return authRoute.map((route) => (<Route exact path={route.route} element={route.component} key={route.key} />));
+  }
+  /*
+  allRoutes.map((route) => {
+    if (route.collapse) {
+      return getRoutes(route.collapse);
+    }
 
-      if (route.route) {
-        return <Route exact path={route.route} element={route.component} key={route.key} />;
-      }
+    if (route.route && loginData.sucess) {
+      return <Route exact path={route.route} element={route.component} key={route.key} />;
+    }
 
-      return null;
-    });
+    return null;
+  });
+  */
 
   const configsButton = (
     <MDBox
@@ -133,35 +142,26 @@ export default function App() {
     </MDBox>
   );
 
-  return loginData.status ? (
+  return (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
-      <Sidenav
+      {loginData.status && <Sidenav
         color={sidenavColor}
         brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
         brandName="Aws Admin Panel"
         routes={routes}
         onMouseEnter={handleOnMouseEnter}
         onMouseLeave={handleOnMouseLeave}
-      />
-      <Configurator />
+      />}
+      {loginData.status && <Configurator />}
       {configsButton}
       {layout === "vr" && <Configurator />}
       <Routes>
         {getRoutes(routes)}
-        <Route path="*" element={<Navigate to="/dashboard" />} />
+        <Route path="*" element={loginData.status ? <Navigate to="/dashboard" /> : <Navigate to="/authentication/sign-in" />} />
       </Routes>
     </ThemeProvider>
-  ) :
-    (
-      <ThemeProvider theme={darkMode ? themeDark : theme}>
-        <CssBaseline />
-        <Routes>
-          {getRoutes(routes)}
-          <Route path="*" element={<Navigate to="/authentication/sign-in" />} />
-        </Routes>
-      </ThemeProvider>
-    )
+  )
 }
   /*  direction === "rtl" ? (
 <CacheProvider value={rtlCache}>
@@ -170,12 +170,12 @@ export default function App() {
 {layout === "dashboard" && (
 <>
 <Sidenav
-  color={sidenavColor}
-  brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-  brandName="Aws Admin Panel"
-  routes={routes}
-  onMouseEnter={handleOnMouseEnter}
-  onMouseLeave={handleOnMouseLeave}
+color={sidenavColor}
+brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
+brandName="Aws Admin Panel"
+routes={routes}
+onMouseEnter={handleOnMouseEnter}
+onMouseLeave={handleOnMouseLeave}
 />
 <Configurator />
 {configsButton}
