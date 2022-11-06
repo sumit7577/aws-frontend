@@ -16,7 +16,7 @@ function reducer(state, action) {
       return { ...state, miniSidenav: action.value };
     }
     case "LOGIN": {
-      return { ...state, loginData: action.value };
+      return { ...state, loginData: action.value, isLoggedIn: action.value !== undefined && action.value.success };
     }
     case "TRANSPARENT_SIDENAV": {
       return { ...state, transparentSidenav: action.value };
@@ -45,6 +45,18 @@ function reducer(state, action) {
     case "DARKMODE": {
       return { ...state, darkMode: action.value };
     }
+    case "LOADING":{
+      return { ...state, loading:action.value };
+    }
+    case "GLOBAL":{
+      return { ...state, global: action.value };
+    }
+    case "ERROR":{
+      return { ...state, errorData: action.value, isError: action.value !== undefined };
+    }
+    case "RESET": {
+      return { ...state, errorData: undefined, isError: false, loading:false };
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -64,7 +76,12 @@ function MaterialUIControllerProvider({ children }) {
     direction: "ltr",
     layout: "dashboard",
     darkMode: false,
-    loginData: { status: false, data: null },
+    isLoggedIn:false,
+    isError:false,
+    loginData: undefined,
+    loading:false,
+    errorData : "Oops! We are facing some internal issue! Please Try Again Later",
+    global: undefined,
   };
 
   const [controller, dispatch] = useReducer(reducer, initialState);
@@ -104,6 +121,10 @@ const setDirection = (dispatch, value) => dispatch({ type: "DIRECTION", value })
 const setLayout = (dispatch, value) => dispatch({ type: "LAYOUT", value });
 const setDarkMode = (dispatch, value) => dispatch({ type: "DARKMODE", value });
 const setLogin = (dispatch, value) => dispatch({ type: "LOGIN", value });
+const setLoading = (dispatch, value) => dispatch({ type: "LOADING", value });
+const setError = (dispacth, value) => dispacth({ type: "ERROR", value});
+const reset = (dispatch, value) => dispatch({ type: "RESET"});
+const setGlobal = (dispatch, value) => dispatch({ type: "GLOBAL", value});
 
 export {
   MaterialUIControllerProvider,
@@ -119,4 +140,8 @@ export {
   setLayout,
   setDarkMode,
   setLogin,
+  setLoading,
+  setError,
+  reset,
+  setGlobal
 };

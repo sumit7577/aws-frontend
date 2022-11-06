@@ -1,19 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// react-router-dom components
 import { Link } from "react-router-dom";
 
 // @mui material components
@@ -25,16 +9,48 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
+import MDSnackbar from "components/MDSnackbar";
+import CircularProgress from '@mui/material/CircularProgress';
 
 // Authentication layout components
 import CoverLayout from "layouts/authentication/components/CoverLayout";
+import { useMaterialUIController, setLoading, setGlobal, setError } from "context";
 
 // Images
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";
+import { useState } from "react";
+import { register } from "../../../networking/api";
 
 function Cover() {
+  const [controller, dispatch] = useMaterialUIController();
+  const [email, setEmail] = useState(() => undefined);
+  const [name, setName] = useState(() => undefined);
+  const [password, setPassword] = useState(() => undefined);
+  const [showAlert, setAlert] = useState(false);
+  console.log(controller);
+  const registerMe = () => {
+    if (email !== undefined && password !== undefined && name !== undefined) {
+      register(dispatch, name, email, password).then(() => {
+        setAlert(true);
+      })
+    }
+    else {
+      setError(dispatch, "Please Fill All Details Correctly!")
+      setAlert(true);
+    }
+  }
   return (
     <CoverLayout image={bgImage}>
+      <MDSnackbar
+        color={!controller.global.success ? "error" : "success"}
+        icon={!controller.global.success ? "error" : "check"}
+        title={!controller.global.success ? "Signup Error!" : "Signup Success!"}
+        content={controller.global?.message ?? controller.errorData}
+        open={showAlert}
+        onClose={() => setAlert(false)}
+        close={() => setAlert(false)}
+        bgWhite
+      />
       <Card>
         <MDBox
           variant="gradient"
@@ -57,13 +73,19 @@ function Cover() {
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDBox mb={2}>
-              <MDInput type="text" label="Name" variant="standard" fullWidth />
+              <MDInput type="text" label="Name" variant="standard" fullWidth onChange={(e) => {
+                setName(() => e.target.value);
+              }} />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" variant="standard" fullWidth />
+              <MDInput type="email" label="Email" variant="standard" fullWidth onChange={(e) => {
+                setEmail(() => e.target.value);
+              }} />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Password" variant="standard" fullWidth />
+              <MDInput type="password" label="Password" variant="standard" fullWidth onChange={(e) => {
+                setPassword(() => e.target.value);
+              }} />
             </MDBox>
             <MDBox display="flex" alignItems="center" ml={-1}>
               <Checkbox />
@@ -87,8 +109,9 @@ function Cover() {
               </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
-                sign in
+              <MDButton variant="gradient" fullWidth onClick={registerMe} color={controller.isError ? "error" : "info"}>
+              {controller.loading && <CircularProgress style={{ height: 30, width: 30, color: "white", padding: 4 }} />}
+                sign up
               </MDButton>
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">

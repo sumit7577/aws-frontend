@@ -13,26 +13,55 @@ import MuiLink from "@mui/material/Link";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import GoogleIcon from "@mui/icons-material/Google";
+import CircularProgress from '@mui/material/CircularProgress';
 
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import MDButton from "components/MDButton";
+import MDSnackbar from "components/MDSnackbar";
 
 // Authentication layout components
 import BasicLayout from "layouts/authentication/components/BasicLayout";
+import { useMaterialUIController, setLoading, setLogin, setError } from "context";
 
 // Images
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
+import { login } from "../../../networking/api";
 
 function Basic() {
+  const [controller, dispatch] = useMaterialUIController();
   const [rememberMe, setRememberMe] = useState(false);
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
+  const [email, setEmail] = useState(() => undefined);
+  const [password, setPassword] = useState(() => undefined);
+  const [showAlert, setAlert] = useState(false);
+  const signIn = () => {
+    if (email !== undefined && password !== undefined) {
+      login(dispatch, email, password).then(() => {
+        setAlert(true);
+      })
+    }
+    else {
+      setError(dispatch, "Please Enter username and password!")
+      setAlert(true);
+    }
+  }
 
   return (
     <BasicLayout image={bgImage}>
+      <MDSnackbar
+        color={controller.isError ? "error" : "success"}
+        icon={controller.isError ? "error" : "check"}
+        title={controller.isError ? "Login Error!" : "Login Success!"}
+        content={controller.loginData?.message ?? controller.errorData}
+        open={showAlert}
+        onClose={() => setAlert(false)}
+        close={() => setAlert(false)}
+        bgWhite
+      />
       <Card>
         <MDBox
           variant="gradient"
@@ -69,10 +98,14 @@ function Basic() {
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" fullWidth />
+              <MDInput type="email" label="Email" error={controller.isError || controller.loginData?.success === false} fullWidth onChange={(e) => {
+                setEmail(() => e.target.value);
+              }} />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Password" fullWidth />
+              <MDInput type="password" label="Password" fullWidth error={controller.isError || controller.loginData?.success === false} onChange={(e) => {
+                setPassword(() => e.target.value);
+              }} />
             </MDBox>
             <MDBox display="flex" alignItems="center" ml={-1}>
               <Switch checked={rememberMe} onChange={handleSetRememberMe} />
@@ -87,7 +120,8 @@ function Basic() {
               </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
+              <MDButton variant="gradient" fullWidth onClick={signIn} color={controller.isError ? "error" : "info"}>
+                {controller.loading && <CircularProgress style={{ height: 30, width: 30, color: "white", padding: 4 }} />}
                 sign in
               </MDButton>
             </MDBox>

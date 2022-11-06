@@ -32,7 +32,7 @@ import createCache from "@emotion/cache";
 import { routes, authRoute } from "routes";
 
 // Material Dashboard 2 React contexts
-import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
+import { useMaterialUIController, setMiniSidenav, setOpenConfigurator,setLogin } from "context";
 
 // Images
 import brandWhite from "assets/images/logo-ct.png";
@@ -53,10 +53,18 @@ export default function App() {
     whiteSidenav,
     darkMode,
     loginData,
+    isLoggedIn,
   } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      // setLogin(dispatch, { success: true, message: token })
+    }
+  }, [isLoggedIn]);
 
   // Cache for the rtl
   useMemo(() => {
@@ -99,7 +107,7 @@ export default function App() {
   }, [pathname]);
 
   const getRoutes = (allRoutes) => {
-    if (loginData.status) {
+    if (isLoggedIn) {
       return allRoutes.map((route) => (<Route exact path={route.route} element={route.component} key={route.key} />));
     }
     return authRoute.map((route) => (<Route exact path={route.route} element={route.component} key={route.key} />));
@@ -145,7 +153,7 @@ export default function App() {
   return (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
       <CssBaseline />
-      {loginData.status && <Sidenav
+      {isLoggedIn && <Sidenav
         color={sidenavColor}
         brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
         brandName="Aws Admin Panel"
@@ -153,17 +161,18 @@ export default function App() {
         onMouseEnter={handleOnMouseEnter}
         onMouseLeave={handleOnMouseLeave}
       />}
-      {loginData.status && <Configurator />}
+      {isLoggedIn && <Configurator />}
       {configsButton}
       {layout === "vr" && <Configurator />}
       <Routes>
         {getRoutes(routes)}
-        <Route path="*" element={loginData.status ? <Navigate to="/dashboard" /> : <Navigate to="/authentication/sign-in" />} />
+        <Route path="*" element={!isLoggedIn ? <Navigate to="/authentication/sign-in" replace /> : <Navigate to="/dashboard" replace />} />
       </Routes>
     </ThemeProvider>
   )
 }
-  /*  direction === "rtl" ? (
+
+/*  direction === "rtl" ? (
 <CacheProvider value={rtlCache}>
 <ThemeProvider theme={darkMode ? themeDarkRTL : themeRTL}>
 <CssBaseline />
