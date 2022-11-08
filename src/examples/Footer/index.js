@@ -1,19 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// prop-types is a library for typechecking of props
 import PropTypes from "prop-types";
 
 // @mui material components
@@ -28,7 +12,6 @@ import MDTypography from "components/MDTypography";
 import typography from "assets/theme/base/typography";
 
 function Footer({ company, links }) {
-  const { href, name } = company;
   const { size } = typography;
 
   const renderLinks = () =>
@@ -66,6 +49,7 @@ function Footer({ company, links }) {
             favorite
           </Icon>
         </MDBox>
+        {/*
         by
         <Link href={href} target="_blank">
           <MDTypography variant="button" fontWeight="medium">
@@ -73,6 +57,7 @@ function Footer({ company, links }) {
           </MDTypography>
         </Link>
         for a better web.
+  */}
       </MDBox>
       <MDBox
         component="ul"
@@ -99,13 +84,8 @@ function Footer({ company, links }) {
 
 // Setting default values for the props of Footer
 Footer.defaultProps = {
-  company: { href: "https://www.creative-tim.com/", name: "Creative Tim" },
-  links: [
-    { href: "https://www.creative-tim.com/", name: "Creative Tim" },
-    { href: "https://www.creative-tim.com/presentation", name: "About Us" },
-    { href: "https://www.creative-tim.com/blog", name: "Blog" },
-    { href: "https://www.creative-tim.com/license", name: "License" },
-  ],
+  company: { href: "/", name: "Aws Admin Panel" },
+  links: [],
 };
 
 // Typechecking props for the Footer

@@ -21,12 +21,13 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Tables",
-    key: "tables",
+    name: "Users",
+    key: "users",
     icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/tables",
+    route: "/user",
     component: <Tables />,
   },
+  /*
   {
     type: "collapse",
     name: "Billing",
@@ -51,6 +52,7 @@ const routes = [
     route: "/notifications",
     component: <Notifications />,
   },
+  */
   {
     type: "collapse",
     name: "Profile",

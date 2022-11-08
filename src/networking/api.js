@@ -55,4 +55,4 @@ const register = async (dispatch, username, emailId, passwords) => {
     }
 }
 
-export { login, register };
+export { login, register,baseUrl };

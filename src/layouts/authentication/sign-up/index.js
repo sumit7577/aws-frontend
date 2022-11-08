@@ -27,7 +27,6 @@ function Cover() {
   const [name, setName] = useState(() => undefined);
   const [password, setPassword] = useState(() => undefined);
   const [showAlert, setAlert] = useState(false);
-  console.log(controller);
   const registerMe = () => {
     if (email !== undefined && password !== undefined && name !== undefined) {
       register(dispatch, name, email, password).then(() => {
@@ -42,9 +41,9 @@ function Cover() {
   return (
     <CoverLayout image={bgImage}>
       <MDSnackbar
-        color={!controller.global.success ? "error" : "success"}
-        icon={!controller.global.success ? "error" : "check"}
-        title={!controller.global.success ? "Signup Error!" : "Signup Success!"}
+        color={!controller.global?.success ? "error" : "success"}
+        icon={!controller.global?.success ? "error" : "check"}
+        title={!controller.global?.success ? "Signup Error!" : "Signup Success!"}
         content={controller.global?.message ?? controller.errorData}
         open={showAlert}
         onClose={() => setAlert(false)}

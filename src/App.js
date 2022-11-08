@@ -62,7 +62,7 @@ export default function App() {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
-      // setLogin(dispatch, { success: true, message: token })
+      setLogin(dispatch, { success: true, message: token })
     }
   }, [isLoggedIn]);
 
