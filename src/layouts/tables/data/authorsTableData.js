@@ -1,32 +1,40 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/function-component-definition */
-/**
-=========================================================
-* Material Dashboard 2 React - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2022 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// Material Dashboard 2 React components
+/* eslint-disable global-require */
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 
 // Images
-import team2 from "assets/images/team-2.jpg";
-import team3 from "assets/images/team-3.jpg";
-import team4 from "assets/images/team-4.jpg";
+import { useState, useEffect } from "react";
+import { getAllUsers } from "networking/adminApi";
+import { useMaterialUIController, setLoading, setLogin, setError } from "context";
+import Icon from "@mui/material/Icon";
+import Menu from "@mui/material/Menu";
+import MenuItem from "@mui/material/MenuItem";
+
+
+const getRandomImage= {
+  team1:require("assets/images/team-1.jpg"),
+  team2:require("assets/images/team-2.jpg"),
+  team3:require("assets/images/team-3.jpg"),
+  team4:require("assets/images/team-4.jpg"),
+  team5:require("assets/images/team-5.jpg"),
+}
+
 
 export default function data() {
+  
+  const [menu, setMenu] = useState(null);
+  const openMenu = ({ currentTarget }) => setMenu(currentTarget);
+  const closeMenu = () => setMenu(null);
+  const [controller, dispatch] = useMaterialUIController();
+  const [allUsers, setAllUsers] = useState(null);
+  useEffect(async () => {
+    const responseData = await getAllUsers(dispatch);
+    setAllUsers(() => responseData);
+  }, []);
   const Author = ({ image, name, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar src={image} name={name} size="sm" />
@@ -48,130 +56,65 @@ export default function data() {
     </MDBox>
   );
 
+  const renderMenu = (
+    <Menu
+      id="simple-menu"
+      anchorEl={menu}
+      anchorOrigin={{
+        vertical: "top",
+        horizontal: "left",
+      }}
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      open={Boolean(menu)}
+      onClose={closeMenu}
+    >
+      <MenuItem onClick={closeMenu}>Edit</MenuItem>
+      <MenuItem onClick={closeMenu}>Show</MenuItem>
+      <MenuItem onClick={closeMenu}>Delete</MenuItem>
+    </Menu>
+  )
+
   return {
     columns: [
-      { Header: "author", accessor: "author", width: "45%", align: "left" },
-      { Header: "function", accessor: "function", align: "left" },
-      { Header: "status", accessor: "status", align: "center" },
-      { Header: "employed", accessor: "employed", align: "center" },
+      { Header: "user", accessor: "user", width: "25%", align: "left" },
+      { Header: "user type", accessor: "type", align: "left" },
+      { Header: "total instance", accessor: "instance", align: "center" },
+      { Header: "password", accessor: "password", align: "center" },
       { Header: "action", accessor: "action", align: "center" },
     ],
 
-    rows: [
-      {
-        author: <Author image={team2} name="John Michael" email="john@creative-tim.com" />,
-        function: <Job title="Manager" description="Organization" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            23/04/18
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-      {
-        author: <Author image={team3} name="Alexa Liras" email="alexa@creative-tim.com" />,
-        function: <Job title="Programator" description="Developer" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="offline" color="dark" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            11/01/19
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-      {
-        author: <Author image={team4} name="Laurent Perrier" email="laurent@creative-tim.com" />,
-        function: <Job title="Executive" description="Projects" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            19/09/17
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-      {
-        author: <Author image={team3} name="Michael Levi" email="michael@creative-tim.com" />,
-        function: <Job title="Programator" description="Developer" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="online" color="success" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            24/12/08
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-      {
-        author: <Author image={team3} name="Richard Gran" email="richard@creative-tim.com" />,
-        function: <Job title="Manager" description="Executive" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="offline" color="dark" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            04/10/21
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-      {
-        author: <Author image={team4} name="Miriam Eric" email="miriam@creative-tim.com" />,
-        function: <Job title="Programator" description="Developer" />,
-        status: (
-          <MDBox ml={-1}>
-            <MDBadge badgeContent="offline" color="dark" variant="gradient" size="sm" />
-          </MDBox>
-        ),
-        employed: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            14/09/20
-          </MDTypography>
-        ),
-        action: (
-          <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-            Edit
-          </MDTypography>
-        ),
-      },
-    ],
+    rows: allUsers?.message.map((item, index) => {
+      const randomImage = Math.floor(Math.random() * (5 - 1 + 1)) + 1;
+      const imageName = `team${randomImage}`;
+      return (
+        {
+          user: <Author image={getRandomImage[imageName]} name={item?.name} email={item?.email} />,
+          type: <Job title={item?.isAdmin ? "Admin" : "User"} />,
+          instance: (
+            <MDBox ml={-1}>
+              <MDBadge badgeContent={item?.instance?.length > 0 ? item.instance.length : "0"} color="success" variant="gradient" size="sm" />
+            </MDBox>
+          ),
+          password: (
+            <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+              {item?.password?.substring(0, 30)}...
+            </MDTypography>
+          ),
+          action: (
+            <>
+              <MDBox color="text" px={2}>
+                <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
+                  more_vert
+                </Icon>
+              </MDBox>
+              {renderMenu}
+            </>
+          ),
+        }
+      )
+    }) ?? []
   };
 }

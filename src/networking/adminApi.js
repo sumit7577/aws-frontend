@@ -25,8 +25,27 @@ const getAllInstance = async (dispatch) => {
     return {success:false, message:"Something Wrong"}
 }
 
-const some=()=>{
-
+const getAllUsers = async (dispatch) => {
+    setLoading(dispatch, true);
+    try {
+        const resp = await axios.get(`${baseUrl}admin/getUsers`);
+        const data = await resp.data;
+        if (data.success) {
+            setGlobal(dispatch, {success: true, message: "Instance Updated"});
+        }
+        else {
+            setError(dispatch, data.message);
+        }
+        return data;
+    }
+    catch (error) {
+        setGlobal(dispatch, {success: false, message: error.message});
+        setError(dispatch, error.message);
+    }
+    finally {
+        setLoading(dispatch, false);
+    }
+    return {success:false, message:"Something Wrong"}
 }
 
-export {getAllInstance,some};
+export {getAllInstance,getAllUsers};

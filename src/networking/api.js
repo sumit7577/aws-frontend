@@ -1,3 +1,4 @@
+
 import { setLoading, setLogin, setError, reset,setGlobal } from "context";
 import axios from "./interceptor";
 
@@ -55,4 +56,13 @@ const register = async (dispatch, username, emailId, passwords) => {
     }
 }
 
-export { login, register,baseUrl };
+const verify = async(Token)=>{
+    console.log(Token);
+    const resp = await axios.post(`${baseUrl}verify`,{
+        token:Token
+    });
+    const data = await resp.data;
+    return data;
+}
+
+export { login, register,baseUrl,verify };

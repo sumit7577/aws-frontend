@@ -102,43 +102,46 @@ export default function data() {
       { Header: "Edit/Show", accessor: "edit", align: "center" },
     ],
 
-    rows: instanceData?.message?.map((elem,index) => (
-      {
-        instance: <Company image={logoXD} name={elem.data} />,
-        users: (
-          <MDBox display="flex" py={1}>
-            {avatars([
-              [team1, elem.useremail],
-            ])}
-          </MDBox>
-        ),
-        createdBy: (
-          <MDTypography variant="caption" color="text" fontWeight="medium">
-            {elem.createdBy.name}
-          </MDTypography>
-        ),
-        createdAt: (
-          <MDBox width="8rem" textAlign="left">
-           {elem.createdAt}
-          </MDBox>
-        ),
-        expiresAt: (
-          <MDBox width="8rem" textAlign="left">
-            {elem.expiresAt}
-          </MDBox>
-        ),
-        edit: (
-          <>
-            <MDBox color="text" px={2}>
-              <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
-                more_vert
-              </Icon>
+    rows: instanceData?.message?.map((elem, index) => {
+      const createdDate = new Date(elem?.createdAt);
+      const expiryDate = new Date(elem?.expiresAt)
+      return (
+        {
+          instance: <Company image={logoXD} name={elem.data} />,
+          users: (
+            <MDBox display="flex" py={1}>
+              {avatars([
+                [team1, elem?.useremail],
+              ])}
             </MDBox>
-            {renderMenu}
-          </>
-        ),
-      })
-    ) ?? []
-
+          ),
+          createdBy: (
+            <MDTypography variant="caption" color="text" fontWeight="medium">
+              {elem?.createdBy.name}
+            </MDTypography>
+          ),
+          createdAt: (
+            <MDBox width="8rem" textAlign="left">
+              {createdDate.toLocaleString()}
+            </MDBox>
+          ),
+          expiresAt: (
+            <MDBox width="8rem" textAlign="left">
+              {expiryDate.toLocaleString()}
+            </MDBox>
+          ),
+          edit: (
+            <>
+              <MDBox color="text" px={2}>
+                <Icon sx={{ cursor: "pointer", fontWeight: "bold" }} fontSize="small" onClick={openMenu}>
+                  more_vert
+                </Icon>
+              </MDBox>
+              {renderMenu}
+            </>
+          ),
+        }
+      )
+    }) ?? []
   };
 }

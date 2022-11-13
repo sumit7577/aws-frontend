@@ -32,11 +32,12 @@ import createCache from "@emotion/cache";
 import { routes, authRoute } from "routes";
 
 // Material Dashboard 2 React contexts
-import { useMaterialUIController, setMiniSidenav, setOpenConfigurator,setLogin } from "context";
+import { useMaterialUIController, setMiniSidenav, setOpenConfigurator, setLogin } from "context";
 
 // Images
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
+import { verify } from "./networking/api";
 
 
 
@@ -60,9 +61,20 @@ export default function App() {
   const { pathname } = useLocation();
 
   useEffect(() => {
+    console.log("login data",loginData);
     const token = localStorage.getItem("token");
     if (token) {
-      setLogin(dispatch, { success: true, message: token })
+      (async () => {
+        const response = await verify(token);
+        if (response.success) {
+          localStorage.setItem("token",response.token);
+          setLogin(dispatch, response);
+        }
+        else{
+          localStorage.removeItem("token");
+          setLogin(dispatch,{});
+        }
+      })();
     }
   }, [isLoggedIn]);
 
